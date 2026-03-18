@@ -1,5 +1,5 @@
 {
-  "originHash" : "38b85f41194e321e86a4aa73c3ba3fee81a75bf81f1737d0edd61e9af858b020",
+  "originHash" : "7207aa9b0806b3c1481a1467b745d7de3be81a79b5721b043e8e47585616284f",
   "pins" : [
     {
       "identity" : "ios-maps-sdk",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "2960dc2278a84e1daf1f16b417c978a96920ecdd",
         "version" : "10.10.0"
+      }
+    },
+    {
+      "identity" : "netfox",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/kasketis/netfox",
+      "state" : {
+        "revision" : "557576032736fd3140422baefb68b8f76c55088f",
+        "version" : "1.21.0"
       }
     }
   ],

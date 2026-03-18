@@ -6,6 +6,7 @@
 //
 
 import CoreLocation
+import GooglePlacesSwift
 
 struct PlaceInfo {
     let name: String
@@ -13,6 +14,8 @@ struct PlaceInfo {
     let country: String?
     let city: String?
     let address: String?
+    let photo: Photo?
+    let rating: Float?
     
     var detailsText: String? {
            let value = [country, city]

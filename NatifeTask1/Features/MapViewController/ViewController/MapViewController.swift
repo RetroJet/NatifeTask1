@@ -8,19 +8,11 @@
 import UIKit
 import CoreLocation
 
-private enum AlertText {
-    static let locationDeniedTitle = "Location Access Needed"
-    static let locationDeniedMessage = "Please allow access to your location to show nearby places on the map."
-    static let locationErrorTitle = "Location Error"
-    static let locationErrorMessage = "Unable to determine your location. Please try again."
-    static let okButtonTitle = "OK"
-    static let settingsButtonTitle = "Settings"
-}
-
 final class MapViewController: UIViewController {
     private let contentView = MapView()
     private let placesService: PlacesServiceProtocol
     private let locationManager = CLLocationManager()
+    private var placeResults: [PlaceInfo] = []
     
     
     init(placesService: PlacesServiceProtocol) {
@@ -39,6 +31,11 @@ final class MapViewController: UIViewController {
         setupView()
         setupLayout()
         setupLocation()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
 }
 
@@ -76,6 +73,12 @@ private extension MapViewController {
         contentView.onGeoButtonTapped = { [weak self] in
             self?.setupGeoButtonTap()
         }
+        
+        contentView.onListButtonTapped = { [weak self] in
+            guard let self = self else { return }
+            let viewController = PlacesListViewController(places: self.placeResults)
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 }
 
@@ -84,7 +87,9 @@ private extension MapViewController {
     func loadPlaces(coordinate: CLLocationCoordinate2D) async {
         do {
             let places = try await placesService.fetchNearbyPlaces(to: coordinate)
+            placeResults = places
             contentView.render(places: places)
+            contentView.setListButtonEnabled(true)
         } catch {
             if case let PlacesServiceError.loadFailed(error) = error {
                 print(error.localizedDescription)

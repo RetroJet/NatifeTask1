@@ -42,7 +42,7 @@ final class PlacesService: PlacesServiceProtocol {
         let restriction = CircularCoordinateRegion(center: coordinate, radius: Constants.searchRadius)
         let request = SearchNearbyRequest(
             locationRestriction: restriction,
-            placeProperties: [.displayName, .coordinate, .addressComponents],
+            placeProperties: [.displayName, .coordinate, .addressComponents, .rating, .photos],
             includedTypes: [.restaurant, .cafe]
         )
         

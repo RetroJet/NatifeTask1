@@ -19,9 +19,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let placeClient = PlacesClient.shared
         let placesService = PlacesService(placesClient: placeClient)
         let mapViewController = MapViewController(placesService: placesService)
+        let navigationController = UINavigationController(rootViewController: mapViewController)
         
         window = UIWindow(windowScene: windowScene)
-        window?.rootViewController = mapViewController
+        window?.rootViewController = navigationController
         window?.makeKeyAndVisible()
     }
 }

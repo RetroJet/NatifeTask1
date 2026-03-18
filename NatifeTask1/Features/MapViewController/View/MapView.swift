@@ -9,10 +9,12 @@ import UIKit
 import GoogleMaps
 
 final class MapView: UIView {
-    private let geoButton = UIButton(configuration: .glass())
-    private var mapView: GMSMapView!
-    
     var onGeoButtonTapped: (() -> Void)?
+    var onListButtonTapped: (() -> Void)?
+    
+    private let geoButton = UIButton(configuration: .glass())
+    private let listButton = UIButton(configuration: .glass())
+    private var mapView: GMSMapView!
     
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -28,51 +30,13 @@ final class MapView: UIView {
     }
 }
 
-// MARK: - Views
-private extension MapView {
-    func setupView() {
-        addSubviews(
-            mapView,
-            geoButton
-        )
-    }
-    
-    func setupButton() {
-        geoButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
-        geoButton.backgroundColor = .blue
-        geoButton.layer.cornerRadius = 25
-        geoButton.clipsToBounds = true
-        geoButton.addTarget(self, action: #selector(pressedGeoButton), for: .touchUpInside)
-    }
-    
-    @objc
-    func pressedGeoButton() {
-        onGeoButtonTapped?()
+// MARK: - Controls
+extension MapView {
+    func setListButtonEnabled(_ isEnabled: Bool) {
+        listButton.isEnabled = isEnabled
+        listButton.alpha = isEnabled ? 1.0 : 0.5
     }
 }
-
-// MARK: - Layout
-private extension MapView {
-    func setupLayout() {
-        disableAutoresizing(
-            mapView,
-            geoButton
-        )
-        
-        NSLayoutConstraint.activate([
-            mapView.topAnchor.constraint(equalTo: topAnchor),
-            mapView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            mapView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            mapView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            geoButton.widthAnchor.constraint(equalToConstant: 50),
-            geoButton.heightAnchor.constraint(equalToConstant: 50),
-            geoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            geoButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -80)
-        ])
-    }
-}
-
 
 // MARK: - Map
 extension MapView {
@@ -92,7 +56,7 @@ extension MapView {
         guard let coordinate = mapView.myLocation?.coordinate else { return }
         center(on: coordinate)
     }
-
+    
     
     func render(places: [PlaceInfo]) {
         mapView.clear()
@@ -106,5 +70,70 @@ extension MapView {
             marker.title = place.name
             marker.map = mapView
         }
+    }
+}
+
+// MARK: - Views
+private extension MapView {
+    func setupView() {
+        addSubviews(
+            mapView,
+            geoButton,
+            listButton
+        )
+    }
+    
+    func setupButton() {
+        geoButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
+        geoButton.backgroundColor = .blue
+        geoButton.layer.cornerRadius = 25
+        geoButton.clipsToBounds = true
+        geoButton.addTarget(self, action: #selector(setupGeoButton), for: .touchUpInside)
+        
+        listButton.setImage(.init(systemName: "list.bullet.rectangle.portrait.fill"), for: .normal)
+        listButton.backgroundColor = .white
+        listButton.layer.cornerRadius = 25
+        listButton.clipsToBounds = true
+        listButton.addTarget(self, action: #selector(setupListButton), for: .touchUpInside)
+        
+        setListButtonEnabled(false)
+    }
+    
+    @objc
+    func setupGeoButton() {
+        onGeoButtonTapped?()
+    }
+    
+    @objc
+    func setupListButton() {
+        onListButtonTapped?()
+    }
+}
+
+//MARK: -> Layout
+private extension MapView {
+    func setupLayout() {
+        disableAutoresizing(
+            mapView,
+            geoButton,
+            listButton
+        )
+        
+        NSLayoutConstraint.activate([
+            mapView.topAnchor.constraint(equalTo: topAnchor),
+            mapView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            mapView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            mapView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            geoButton.widthAnchor.constraint(equalToConstant: 60),
+            geoButton.heightAnchor.constraint(equalToConstant: 60),
+            geoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            geoButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -80),
+            
+            listButton.widthAnchor.constraint(equalToConstant: 60),
+            listButton.heightAnchor.constraint(equalToConstant: 60),
+            listButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
+            listButton.bottomAnchor.constraint(equalTo: geoButton.topAnchor, constant: -20)
+        ])
     }
 }
