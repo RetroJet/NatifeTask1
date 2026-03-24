@@ -7,7 +7,6 @@
 
 import UIKit
 import GoogleMaps
-import GooglePlacesSwift
 
 final class MapView: UIView {
     private let geoButton = UIButton(configuration: .glass())
@@ -29,6 +28,7 @@ final class MapView: UIView {
     }
 }
 
+// MARK: - Views
 private extension MapView {
     func setupView() {
         addSubviews(
@@ -51,37 +51,7 @@ private extension MapView {
     }
 }
 
-//MARK: -> Map Setup
-extension MapView {
-    func setupMap() {
-        let options = GMSMapViewOptions()
-        options.camera = GMSCameraPosition(latitude: 0, longitude: 0, zoom: 6.0)
-        mapView = GMSMapView(options: options)
-        mapView.isMyLocationEnabled = true
-    }
-    
-    func centerOnUserLocation() {
-        guard let coordinate = mapView.myLocation?.coordinate else { return }
-        let camera = GMSCameraPosition(target: coordinate, zoom: 15)
-        mapView.animate(to: camera)
-    }
-    
-    func render(places: [PlaceInfo]) {
-        mapView.clear()
-        
-        for place in places {
-            let marker = GMSMarker()
-            marker.snippet = [place.detailsText, place.addressText]
-                .compactMap { $0 }
-                .joined(separator: "\n")
-            marker.position = place.coordinate
-            marker.title = place.nameText
-            marker.map = mapView
-        }
-    }
-}
-
-//MARK: -> Layout Setup
+// MARK: - Layout
 private extension MapView {
     func setupLayout() {
         disableAutoresizing(
@@ -100,5 +70,41 @@ private extension MapView {
             geoButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
             geoButton.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor, constant: -80)
         ])
+    }
+}
+
+
+// MARK: - Map
+extension MapView {
+    func setupMap() {
+        let options = GMSMapViewOptions()
+        options.camera = GMSCameraPosition(latitude: 0, longitude: 0, zoom: 6.0)
+        mapView = GMSMapView(options: options)
+        mapView.isMyLocationEnabled = true
+    }
+    
+    func center(on coordinate: CLLocationCoordinate2D) {
+        let camera = GMSCameraPosition(target: coordinate, zoom: 15)
+        mapView.animate(to: camera)
+    }
+    
+    func centerOnUserLocation() {
+        guard let coordinate = mapView.myLocation?.coordinate else { return }
+        center(on: coordinate)
+    }
+
+    
+    func render(places: [PlaceInfo]) {
+        mapView.clear()
+        
+        for place in places {
+            let marker = GMSMarker()
+            marker.snippet = [place.detailsText, place.address]
+                .compactMap { $0 }
+                .joined(separator: "\n")
+            marker.position = place.coordinate
+            marker.title = place.name
+            marker.map = mapView
+        }
     }
 }

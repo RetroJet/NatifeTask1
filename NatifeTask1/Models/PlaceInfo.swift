@@ -5,11 +5,20 @@
 //  Created by Nazar on 18.03.2026.
 //
 
-import GooglePlaces
+import CoreLocation
 
 struct PlaceInfo {
-    let nameText: String
+    let name: String
     let coordinate: CLLocationCoordinate2D
-    let detailsText: String?
-    let addressText: String?
+    let country: String?
+    let city: String?
+    let address: String?
+    
+    var detailsText: String? {
+           let value = [country, city]
+               .compactMap { $0 }
+               .joined(separator: ", ")
+           return value.isEmpty ? nil : value
+       }
 }
+
