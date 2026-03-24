@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		78AA7A472F69369A002858AA /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 78AA7A462F69369A002858AA /* GooglePlaces */; };
+		78AA7A492F69369A002858AA /* GooglePlacesSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 78AA7A482F69369A002858AA /* GooglePlacesSwift */; };
+		78AA7A4C2F6936E5002858AA /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 78AA7A4B2F6936E5002858AA /* GoogleMaps */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		78AA79EA2F68BAFE002858AA /* NatifeTask1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NatifeTask1.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -14,7 +20,7 @@
 		78AA79FC2F68BB00002858AA /* Exceptions for "NatifeTask1" folder in "NatifeTask1" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 78AA79E92F68BAFE002858AA /* NatifeTask1 */;
 		};
@@ -36,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				78AA7A472F69369A002858AA /* GooglePlaces in Frameworks */,
+				78AA7A492F69369A002858AA /* GooglePlacesSwift in Frameworks */,
+				78AA7A4C2F6936E5002858AA /* GoogleMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +87,9 @@
 			);
 			name = NatifeTask1;
 			packageProductDependencies = (
+				78AA7A462F69369A002858AA /* GooglePlaces */,
+				78AA7A482F69369A002858AA /* GooglePlacesSwift */,
+				78AA7A4B2F6936E5002858AA /* GoogleMaps */,
 			);
 			productName = NatifeTask1;
 			productReference = 78AA79EA2F68BAFE002858AA /* NatifeTask1.app */;
@@ -107,6 +119,10 @@
 			);
 			mainGroup = 78AA79E12F68BAFE002858AA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
+				78AA7A4A2F6936E5002858AA /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 78AA79EB2F68BAFE002858AA /* Products */;
 			projectDirPath = "";
@@ -147,18 +163,19 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 79NZFM7X3P;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NatifeTask1/Info.plist;
+				INFOPLIST_FILE = NatifeTask1/Resources/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow location access to show nearby places on the map";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Hitinov.NatifeTask1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hadzhyhitinov.projectnearplaces;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -179,18 +196,19 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 79NZFM7X3P;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = NatifeTask1/Info.plist;
+				INFOPLIST_FILE = NatifeTask1/Resources/Info.plist;
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Please allow location access to show nearby places on the map";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
-				INFOPLIST_KEY_UIMainStoryboardFile = Main;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = Hitinov.NatifeTask1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hadzhyhitinov.projectnearplaces;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -345,6 +363,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.10.0;
+			};
+		};
+		78AA7A4A2F6936E5002858AA /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		78AA7A462F69369A002858AA /* GooglePlaces */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
+			productName = GooglePlaces;
+		};
+		78AA7A482F69369A002858AA /* GooglePlacesSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */;
+			productName = GooglePlacesSwift;
+		};
+		78AA7A4B2F6936E5002858AA /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 78AA7A4A2F6936E5002858AA /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 78AA79E22F68BAFE002858AA /* Project object */;
 }
