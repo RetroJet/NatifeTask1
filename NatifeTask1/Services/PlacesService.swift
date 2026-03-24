@@ -8,13 +8,13 @@
 import CoreLocation
 import GooglePlacesSwift
 
-protocol IPlacesService {
+protocol PlacesServiceProtocol {
     func fetchNearbyPlaces(to coordinate: CLLocationCoordinate2D) async throws-> [PlaceInfo]
 }
 
 enum PlacesServiceError: LocalizedError {
     case empty
-    case loadFailed
+    case loadFailed(Error)
     
     var errorDescription: String? {
         switch self {
@@ -26,7 +26,11 @@ enum PlacesServiceError: LocalizedError {
     }
 }
 
-final class PlacesService: IPlacesService {
+private enum Constants {
+    static let searchRadius: CLLocationDistance = 5000
+}
+
+final class PlacesService: PlacesServiceProtocol {
     private let placesClient: PlacesClient
     private let mapper = PlaceInfoMapper()
     
@@ -35,7 +39,7 @@ final class PlacesService: IPlacesService {
     }
     
     func fetchNearbyPlaces(to coordinate: CLLocationCoordinate2D) async throws -> [PlaceInfo] {
-        let restriction = CircularCoordinateRegion(center: coordinate, radius: 5000)
+        let restriction = CircularCoordinateRegion(center: coordinate, radius: Constants.searchRadius)
         let request = SearchNearbyRequest(
             locationRestriction: restriction,
             placeProperties: [.displayName, .coordinate, .addressComponents],
@@ -51,8 +55,8 @@ final class PlacesService: IPlacesService {
             }
             
             return mappedPlaces
-        case .failure:
-            throw PlacesServiceError.loadFailed
+        case .failure(let error):
+            throw PlacesServiceError.loadFailed(error)
         }
     }
 }

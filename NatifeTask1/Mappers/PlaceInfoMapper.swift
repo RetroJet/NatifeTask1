@@ -15,19 +15,16 @@ struct PlaceInfoMapper {
         let route = components?.first { $0.types.contains(.route) }?.name
         let streetNumber = components?.first { $0.types.contains(.streetNumber) }?.name
         
-        let detailsText = [country, city]
-            .compactMap { $0 }
-            .joined(separator: ", ")
-        
         let addressText = [route, streetNumber]
             .compactMap { $0 }
             .joined(separator: " ")
         
         return PlaceInfo(
-            nameText: place.displayName ?? "",
+            name: place.displayName ?? "",
             coordinate: place.location,
-            detailsText: detailsText.isEmpty ? nil: detailsText,
-            addressText: addressText.isEmpty ? nil: addressText
+            country: country,
+            city: city,
+            address: addressText.isEmpty ? nil: addressText
         )
     }
 }
