@@ -83,6 +83,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				7856ACBF2F75AF0E00C30726 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				78AA79EC2F68BAFE002858AA /* NatifeTask1 */,
@@ -126,6 +127,7 @@
 				78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
 				78AA7A4A2F6936E5002858AA /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
 				780BEDCD2F7450D400BAB500 /* XCRemoteSwiftPackageReference "netfox" */,
+				7856ACBD2F75AE9600C30726 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 78AA79EB2F68BAFE002858AA /* Products */;
@@ -156,6 +158,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		7856ACBF2F75AF0E00C30726 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 7856ACBE2F75AF0E00C30726 /* SwiftLintBuildToolPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		78AA79FE2F68BB00002858AA /* Debug */ = {
@@ -379,6 +388,14 @@
 				minimumVersion = 1.21.0;
 			};
 		};
+		7856ACBD2F75AE9600C30726 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.63.2;
+			};
+		};
 		78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
@@ -402,6 +419,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 780BEDCD2F7450D400BAB500 /* XCRemoteSwiftPackageReference "netfox" */;
 			productName = netfox;
+		};
+		7856ACBE2F75AF0E00C30726 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7856ACBD2F75AE9600C30726 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 		78AA7A462F69369A002858AA /* GooglePlaces */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -7,14 +7,24 @@
 
 import UIKit
 
-class PlacesListViewController: UIViewController {
-    private let contentView = PlacesListView()
-    private let reuseIdentifier = "reuseIdentifier"
+final class PlacesListViewController: UIViewController {
+    
+    // MARK: - Private Properties
+    private let tableView = UITableView()
+    private let placePhotoService: PlacePhotoServiceProtocol
     private var places: [PlaceInfo] = []
     
-    init(places: [PlaceInfo]) {
+    // MARK: - Initializers
+    init(
+        places: [PlaceInfo],
+        placePhotoService: PlacePhotoServiceProtocol
+    ) {
         self.places = places
-        super.init(nibName: nil, bundle: nil)
+        self.placePhotoService = placePhotoService
+        super.init(
+            nibName: nil,
+            bundle: nil
+        )
     }
     
     @available(*, unavailable)
@@ -22,52 +32,13 @@ class PlacesListViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
+    // MARK: - Overrides Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTableView()
         setupNavigationBar()
         setupView()
         setupLayout()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
-    }
-}
-
-// MARK: - Views
-private extension PlacesListViewController {
-    func setupView() {
-        view.addSubview(contentView)
-        
-        contentView.configureTableView(dataSource: self)
-        contentView.register(PlaceCell.self, forCellReuseIdentifier: reuseIdentifier)
-    }
-    
-    func setupNavigationBar() {
-        title = "List"
-        
-        let appearance = UINavigationBarAppearance()
-        appearance.shadowColor = .separator
-        appearance.backgroundColor = .white
-        
-        navigationController?.navigationBar.scrollEdgeAppearance = appearance
-        navigationController?.navigationBar.standardAppearance = appearance
-    }
-}
-
-// MARK: - Layout
-private extension PlacesListViewController {
-    func setupLayout() {
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
     }
 }
 
@@ -78,9 +49,57 @@ extension PlacesListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath) as! PlaceCell
+        let cell: PlaceCell = tableView.dequeue(for: indexPath)
         let place = places[indexPath.row]
-        cell.configure(with: place)
+        cell.configure(
+            with: place,
+            placePhotoService: placePhotoService
+        )
         return cell
     }
 }
+
+// MARK: - Views
+private extension PlacesListViewController {
+    func setupView() {
+        view.addSubview(tableView)
+    }
+    
+    func setupTableView() {
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 110
+        tableView.separatorInset = .zero
+        
+        tableView.dataSource = self
+        tableView.register(cell: PlaceCell.self)
+    }
+    
+    func setupNavigationBar() {
+        title = PlacesListText.title
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.shadowColor = .separator
+        appearance.backgroundColor = .white
+        
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        navigationController?.navigationBar.standardAppearance = appearance
+    }
+}
+
+
+// MARK: - Layout
+private extension PlacesListViewController {
+    func setupLayout() {
+        view.disableAutoresizing(
+            tableView
+        )
+        
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+}
+

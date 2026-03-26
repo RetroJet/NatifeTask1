@@ -9,8 +9,6 @@ import UIKit
 
 extension UIView {
     func disableAutoresizing(_ views: UIView...) {
-        for view in views {
-            view.translatesAutoresizingMaskIntoConstraints = false
-        }
+        views.forEach { $0.translatesAutoresizingMaskIntoConstraints = false }
     }
 }

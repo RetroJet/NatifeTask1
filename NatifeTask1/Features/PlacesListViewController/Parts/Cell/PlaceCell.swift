@@ -7,17 +7,25 @@
 
 import UIKit
 
-class PlaceCell: UITableViewCell {
+final class PlaceCell: UITableViewCell {
+    private enum Constants {
+        static let photoMaxSize = CGSize(width: 140, height: 140)
+    }
+    
+    // MARK: - Private Properties
+    private let textStackView = UIStackView()
     private let titleLabel = UILabel()
-    private let rating = UILabel()
+    private let ratingLabel = UILabel()
     private let addressLabel = UILabel()
     private let placeImage = UIImageView()
     private var photoTask: Task<Void, Never>?
     
+    // MARK: - Overrides Methods
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupImage()
         setupLabel()
+        setupStackView()
         setupView()
         setupLayout()
     }
@@ -27,7 +35,8 @@ class PlaceCell: UITableViewCell {
         photoTask?.cancel()
         photoTask = nil
         titleLabel.text = nil
-        rating.text = nil
+        ratingLabel.text = nil
+        ratingLabel.isHidden = false
         addressLabel.text = nil
         placeImage.image = .noImagePlaceholder
     }
@@ -38,17 +47,57 @@ class PlaceCell: UITableViewCell {
     }
 }
 
+// MARK: - Configuration
+extension PlaceCell {
+    func configure(with place: PlaceInfo, placePhotoService: PlacePhotoServiceProtocol) {
+        photoTask?.cancel()
+        photoTask = nil
+        
+        titleLabel.text = place.name
+        addressLabel.text = place.address
+        placeImage.image = .noImagePlaceholder
+        ratingLabel.text = place.ratingText
+        ratingLabel.isHidden = place.ratingText == nil
+        
+        guard let photo = place.photo else { return }
+        
+        photoTask = Task { [weak self] in
+            let image = await placePhotoService.fetchPhoto(
+                from: photo,
+                maxSize: Constants.photoMaxSize
+            )
+            
+            guard !Task.isCancelled else { return }
+            
+            await MainActor.run {
+                self?.placeImage.image = image ?? .noImagePlaceholder
+            }
+        }
+    }
+}
+
 // MARK: - Views
 private extension PlaceCell {
     func setupView() {
         contentView.addSubviews(
-            titleLabel,
-            addressLabel,
-            rating,
-            placeImage
+            placeImage,
+            textStackView
         )
         
         selectionStyle = .none
+    }
+    
+    func setupStackView() {
+        textStackView.addArrangedSubviews(
+            titleLabel,
+            addressLabel,
+            ratingLabel
+        )
+        
+        textStackView.axis = .vertical
+        textStackView.spacing = 5
+        textStackView.alignment = .fill
+        textStackView.distribution = .fill
     }
     
     func setupLabel() {
@@ -59,8 +108,8 @@ private extension PlaceCell {
         addressLabel.font = UIFont.systemFont(ofSize: 18)
         addressLabel.numberOfLines = 0
         
-        rating.font = UIFont.systemFont(ofSize: 16)
-        rating.numberOfLines = 1
+        ratingLabel.font = UIFont.systemFont(ofSize: 16)
+        ratingLabel.numberOfLines = 1
     }
     
     func setupImage() {
@@ -75,10 +124,8 @@ private extension PlaceCell {
 private extension PlaceCell {
     func setupLayout() {
         contentView.disableAutoresizing(
-            titleLabel,
-            addressLabel,
-            rating,
-            placeImage
+            placeImage,
+            textStackView
         )
         
         NSLayoutConstraint.activate([
@@ -87,46 +134,10 @@ private extension PlaceCell {
             placeImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
             placeImage.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -30),
             
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
-            titleLabel.trailingAnchor.constraint(equalTo: placeImage.leadingAnchor, constant: -16),
-            
-            addressLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
-            addressLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            addressLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            
-            rating.topAnchor.constraint(equalTo: addressLabel.bottomAnchor, constant: 5),
-            rating.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            rating.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            rating.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20)
+            textStackView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 20),
+            textStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 30),
+            textStackView.trailingAnchor.constraint(equalTo: placeImage.leadingAnchor, constant: -30),
+            textStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
         ])
-    }
-}
-
-// MARK: - Formatting
-private extension PlaceCell {
-    func makeRatingText(from value: Float) -> String {
-        let starsCount = Int(round(value))
-        let stars = String(repeating: "⭐", count: starsCount)
-        return "\(String(format: "%.1f", value)) \(stars)"
-    }
-}
-
-
-// MARK: - Configuration
-extension PlaceCell {
-    func configure(with place: PlaceInfo) {
-        titleLabel.text = place.name
-        addressLabel.text = place.address
-        
-        if let ratingValue = place.rating {
-            rating.text = makeRatingText(from: ratingValue)
-        } else {
-            rating.text = nil
-        }
-        
-        if let photo = place.photo {
-            photoTask = placeImage.loadPhoto(photo)
-        }
     }
 }

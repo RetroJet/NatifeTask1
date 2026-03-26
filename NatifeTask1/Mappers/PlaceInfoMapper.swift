@@ -24,7 +24,7 @@ struct PlaceInfoMapper {
             coordinate: place.location,
             country: country,
             city: city,
-            address: address.isEmpty ? nil: address,
+            address: address.isEmpty ? nil : address,
             photo: place.photos?.first,
             rating: place.rating
         )

@@ -5,17 +5,21 @@
 //  Created by Nazar on 17.03.2026.
 //
 
-import UIKit
 import GoogleMaps
+import UIKit
 
 final class MapView: UIView {
+    
+    // MARK: - Callbacks
     var onGeoButtonTapped: (() -> Void)?
     var onListButtonTapped: (() -> Void)?
     
+    // MARK: - Private Properties
     private let geoButton = UIButton(configuration: .glass())
     private let listButton = UIButton(configuration: .glass())
     private var mapView: GMSMapView!
     
+    // MARK: - Overrides Methods
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupMap()
@@ -57,7 +61,6 @@ extension MapView {
         center(on: coordinate)
     }
     
-    
     func render(places: [PlaceInfo]) {
         mapView.clear()
         
@@ -74,8 +77,8 @@ extension MapView {
 }
 
 // MARK: - Views
-private extension MapView {
-    func setupView() {
+extension MapView {
+    fileprivate func setupView() {
         addSubviews(
             mapView,
             geoButton,
@@ -83,7 +86,7 @@ private extension MapView {
         )
     }
     
-    func setupButton() {
+    fileprivate func setupButton() {
         geoButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
         geoButton.backgroundColor = .blue
         geoButton.layer.cornerRadius = 25
@@ -100,19 +103,19 @@ private extension MapView {
     }
     
     @objc
-    func setupGeoButton() {
+    fileprivate func setupGeoButton() {
         onGeoButtonTapped?()
     }
     
     @objc
-    func setupListButton() {
+    fileprivate func setupListButton() {
         onListButtonTapped?()
     }
 }
 
 //MARK: -> Layout
-private extension MapView {
-    func setupLayout() {
+extension MapView {
+    fileprivate func setupLayout() {
         disableAutoresizing(
             mapView,
             geoButton,
@@ -133,7 +136,7 @@ private extension MapView {
             listButton.widthAnchor.constraint(equalToConstant: 60),
             listButton.heightAnchor.constraint(equalToConstant: 60),
             listButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -20),
-            listButton.bottomAnchor.constraint(equalTo: geoButton.topAnchor, constant: -20)
+            listButton.bottomAnchor.constraint(equalTo: geoButton.topAnchor, constant: -20),
         ])
     }
 }
