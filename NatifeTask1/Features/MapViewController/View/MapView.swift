@@ -10,16 +10,19 @@ import UIKit
 
 final class MapView: UIView {
     
-    // MARK: - Callbacks
+    // MARK: - Properties
+    
     var onGeoButtonTapped: (() -> Void)?
     var onListButtonTapped: (() -> Void)?
     
-    // MARK: - Private Properties
+    // MARK: - UI Elements
+    
     private let geoButton = UIButton(configuration: .glass())
     private let listButton = UIButton(configuration: .glass())
     private var mapView: GMSMapView!
     
-    // MARK: - Overrides Methods
+    // MARK: - Initialization
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupMap()
@@ -34,7 +37,8 @@ final class MapView: UIView {
     }
 }
 
-// MARK: - Controls
+// MARK: - Internal Methods
+
 extension MapView {
     func setListButtonEnabled(_ isEnabled: Bool) {
         listButton.isEnabled = isEnabled
@@ -42,7 +46,6 @@ extension MapView {
     }
 }
 
-// MARK: - Map
 extension MapView {
     func setupMap() {
         let options = GMSMapViewOptions()
@@ -76,9 +79,10 @@ extension MapView {
     }
 }
 
-// MARK: - Views
-extension MapView {
-    fileprivate func setupView() {
+// MARK: - Private Methods
+
+private extension MapView {
+    func setupView() {
         addSubviews(
             mapView,
             geoButton,
@@ -86,7 +90,7 @@ extension MapView {
         )
     }
     
-    fileprivate func setupButton() {
+    func setupButton() {
         geoButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
         geoButton.backgroundColor = .blue
         geoButton.layer.cornerRadius = 25
@@ -103,19 +107,18 @@ extension MapView {
     }
     
     @objc
-    fileprivate func setupGeoButton() {
+    func setupGeoButton() {
         onGeoButtonTapped?()
     }
     
     @objc
-    fileprivate func setupListButton() {
+    func setupListButton() {
         onListButtonTapped?()
     }
 }
 
-//MARK: -> Layout
-extension MapView {
-    fileprivate func setupLayout() {
+private extension MapView {
+    func setupLayout() {
         disableAutoresizing(
             mapView,
             geoButton,

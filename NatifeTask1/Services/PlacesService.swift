@@ -27,10 +27,6 @@ enum PlacesServiceError: LocalizedError {
 }
 
 final class PlacesService: PlacesServiceProtocol {
-    private enum Constants {
-        static let searchRadius: CLLocationDistance = 5000
-    }
-    
     private let placesClient: PlacesClient
     private let mapper = PlaceInfoMapper()
     
@@ -58,5 +54,11 @@ final class PlacesService: PlacesServiceProtocol {
         case .failure(let error):
             throw PlacesServiceError.loadFailed(error)
         }
+    }
+}
+
+private extension PlacesService {
+    enum Constants {
+        static let searchRadius: CLLocationDistance = 5000
     }
 }

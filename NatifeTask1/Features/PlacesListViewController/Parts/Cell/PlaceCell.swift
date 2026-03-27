@@ -8,19 +8,21 @@
 import UIKit
 
 final class PlaceCell: UITableViewCell {
-    private enum Constants {
-        static let photoMaxSize = CGSize(width: 140, height: 140)
-    }
     
-    // MARK: - Private Properties
+    // MARK: - UI Elements
+    
     private let textStackView = UIStackView()
     private let titleLabel = UILabel()
     private let ratingLabel = UILabel()
     private let addressLabel = UILabel()
     private let placeImage = UIImageView()
+    
+    // MARK: - Properties
+    
     private var photoTask: Task<Void, Never>?
     
-    // MARK: - Overrides Methods
+    // MARK: - Initialization
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupImage()
@@ -29,6 +31,8 @@ final class PlaceCell: UITableViewCell {
         setupView()
         setupLayout()
     }
+    
+    // MARK: - Lifecycle
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -47,7 +51,8 @@ final class PlaceCell: UITableViewCell {
     }
 }
 
-// MARK: - Configuration
+// MARK: - Internal Methods
+
 extension PlaceCell {
     func configure(with place: PlaceInfo, placePhotoService: PlacePhotoServiceProtocol) {
         photoTask?.cancel()
@@ -76,7 +81,8 @@ extension PlaceCell {
     }
 }
 
-// MARK: - Views
+// MARK: - Private Methods
+
 private extension PlaceCell {
     func setupView() {
         contentView.addSubviews(
@@ -120,7 +126,6 @@ private extension PlaceCell {
     }
 }
 
-// MARK: - Layout
 private extension PlaceCell {
     func setupLayout() {
         contentView.disableAutoresizing(
@@ -139,5 +144,11 @@ private extension PlaceCell {
             textStackView.trailingAnchor.constraint(equalTo: placeImage.leadingAnchor, constant: -30),
             textStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -20),
         ])
+    }
+}
+
+private extension PlaceCell {
+    enum Constants {
+        static let photoMaxSize = CGSize(width: 140, height: 140)
     }
 }

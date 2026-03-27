@@ -15,8 +15,8 @@ enum LocationAlertText {
 }
 
 enum CommonText {
-    static let commonOkButtonTitle = String(localized: "common_ok_button_title")
-    static let commonSettingsButtonTitle = String(localized: "common_settings_button_title")
+    static let okButtonTitle = String(localized: "common_ok_button_title")
+    static let settingsButtonTitle = String(localized: "common_settings_button_title")
 }
 
 enum PlacesListText {
