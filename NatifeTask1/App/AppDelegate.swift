@@ -8,6 +8,7 @@
 import UIKit
 import GoogleMaps
 import GooglePlaces
+import netfox
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +22,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GMSPlacesClient.provideAPIKey(apiKey)
         GMSServices.provideAPIKey(apiKey)
+        
+        #if DEBUG
+        NFX.sharedInstance().start()
+        #endif
+        
         return true
     }
 }

@@ -26,10 +26,6 @@ enum PlacesServiceError: LocalizedError {
     }
 }
 
-private enum Constants {
-    static let searchRadius: CLLocationDistance = 5000
-}
-
 final class PlacesService: PlacesServiceProtocol {
     private let placesClient: PlacesClient
     private let mapper = PlaceInfoMapper()
@@ -42,7 +38,7 @@ final class PlacesService: PlacesServiceProtocol {
         let restriction = CircularCoordinateRegion(center: coordinate, radius: Constants.searchRadius)
         let request = SearchNearbyRequest(
             locationRestriction: restriction,
-            placeProperties: [.displayName, .coordinate, .addressComponents],
+            placeProperties: [.displayName, .coordinate, .addressComponents, .rating, .photos],
             includedTypes: [.restaurant, .cafe]
         )
         
@@ -58,5 +54,11 @@ final class PlacesService: PlacesServiceProtocol {
         case .failure(let error):
             throw PlacesServiceError.loadFailed(error)
         }
+    }
+}
+
+private extension PlacesService {
+    enum Constants {
+        static let searchRadius: CLLocationDistance = 5000
     }
 }

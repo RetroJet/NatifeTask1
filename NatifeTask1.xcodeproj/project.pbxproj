@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		780BEDCF2F7450D400BAB500 /* netfox in Frameworks */ = {isa = PBXBuildFile; productRef = 780BEDCE2F7450D400BAB500 /* netfox */; };
 		78AA7A472F69369A002858AA /* GooglePlaces in Frameworks */ = {isa = PBXBuildFile; productRef = 78AA7A462F69369A002858AA /* GooglePlaces */; };
 		78AA7A492F69369A002858AA /* GooglePlacesSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 78AA7A482F69369A002858AA /* GooglePlacesSwift */; };
 		78AA7A4C2F6936E5002858AA /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 78AA7A4B2F6936E5002858AA /* GoogleMaps */; };
@@ -44,6 +45,7 @@
 			files = (
 				78AA7A472F69369A002858AA /* GooglePlaces in Frameworks */,
 				78AA7A492F69369A002858AA /* GooglePlacesSwift in Frameworks */,
+				780BEDCF2F7450D400BAB500 /* netfox in Frameworks */,
 				78AA7A4C2F6936E5002858AA /* GoogleMaps in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -90,6 +92,7 @@
 				78AA7A462F69369A002858AA /* GooglePlaces */,
 				78AA7A482F69369A002858AA /* GooglePlacesSwift */,
 				78AA7A4B2F6936E5002858AA /* GoogleMaps */,
+				780BEDCE2F7450D400BAB500 /* netfox */,
 			);
 			productName = NatifeTask1;
 			productReference = 78AA79EA2F68BAFE002858AA /* NatifeTask1.app */;
@@ -122,6 +125,8 @@
 			packageReferences = (
 				78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */,
 				78AA7A4A2F6936E5002858AA /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+				780BEDCD2F7450D400BAB500 /* XCRemoteSwiftPackageReference "netfox" */,
+				7856ACBD2F75AE9600C30726 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 78AA79EB2F68BAFE002858AA /* Products */;
@@ -280,6 +285,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -337,6 +343,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -365,6 +372,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		780BEDCD2F7450D400BAB500 /* XCRemoteSwiftPackageReference "netfox" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kasketis/netfox";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.21.0;
+			};
+		};
+		7856ACBD2F75AE9600C30726 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.63.2;
+			};
+		};
 		78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/googlemaps/ios-places-sdk";
@@ -384,6 +407,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		780BEDCE2F7450D400BAB500 /* netfox */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 780BEDCD2F7450D400BAB500 /* XCRemoteSwiftPackageReference "netfox" */;
+			productName = netfox;
+		};
 		78AA7A462F69369A002858AA /* GooglePlaces */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 78AA7A452F69369A002858AA /* XCRemoteSwiftPackageReference "ios-places-sdk" */;

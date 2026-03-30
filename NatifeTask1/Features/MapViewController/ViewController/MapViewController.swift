@@ -8,30 +8,39 @@
 import UIKit
 import CoreLocation
 
-private enum AlertText {
-    static let locationDeniedTitle = "Location Access Needed"
-    static let locationDeniedMessage = "Please allow access to your location to show nearby places on the map."
-    static let locationErrorTitle = "Location Error"
-    static let locationErrorMessage = "Unable to determine your location. Please try again."
-    static let okButtonTitle = "OK"
-    static let settingsButtonTitle = "Settings"
-}
-
 final class MapViewController: UIViewController {
+    
+    // MARK: - UI Elements
+    
     private let contentView = MapView()
+    
+    // MARK: - Properties
+    
     private let placesService: PlacesServiceProtocol
+    private let placePhotoService: PlacePhotoServiceProtocol
     private let locationManager = CLLocationManager()
+    private var placeResults: [PlaceInfo] = []
     
+    // MARK: - Initializers
     
-    init(placesService: PlacesServiceProtocol) {
+    init(
+        placesService: PlacesServiceProtocol,
+        placePhotoService: PlacePhotoServiceProtocol
+    ) {
         self.placesService = placesService
-        super.init(nibName: nil, bundle: nil)
+        self.placePhotoService = placePhotoService
+        super.init(
+            nibName: nil,
+            bundle: nil
+        )
     }
     
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,51 +49,47 @@ final class MapViewController: UIViewController {
         setupLayout()
         setupLocation()
     }
-}
-
-// MARK: - Views
-private extension MapViewController {
-    func setupView() {
-        view.addSubviews(
-            contentView
-        )
-        
-        locationManager.delegate = self
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
-}
-
-// MARK: - Layout
-private extension MapViewController {
-    func setupLayout() {
-        view.disableAutoresizing(
-            contentView
-        )
-        
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        navigationController?.setNavigationBarHidden(false, animated: animated)
     }
+    
 }
 
+// MARK: - Private Methods
 
-// MARK: - Bindings
 private extension MapViewController {
     func setupBindings() {
         contentView.onGeoButtonTapped = { [weak self] in
             self?.setupGeoButtonTap()
         }
+        
+        contentView.onListButtonTapped = { [weak self] in
+            guard let self else { return }
+            
+            let viewController = PlacesListViewController(
+                places: self.placeResults,
+                placePhotoService: placePhotoService
+            )
+            
+            self.navigationController?.pushViewController(viewController, animated: true)
+        }
     }
 }
 
-// MARK: - Places
 private extension MapViewController {
     func loadPlaces(coordinate: CLLocationCoordinate2D) async {
         do {
             let places = try await placesService.fetchNearbyPlaces(to: coordinate)
+            placeResults = places
             contentView.render(places: places)
+            contentView.setListButtonEnabled(true)
         } catch {
             if case let PlacesServiceError.loadFailed(error) = error {
                 print(error.localizedDescription)
@@ -94,7 +99,6 @@ private extension MapViewController {
     }
 }
 
-// MARK: - Alerts
 private extension MapViewController {
     func showPlacesLoadErrorAlert(_ error: Error) {
         let alert = UIAlertController(
@@ -102,19 +106,19 @@ private extension MapViewController {
             message: error.localizedDescription,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: AlertText.okButtonTitle, style: .default))
+        alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
         present(alert, animated: true)
     }
     
     func showLocationDeniedAlert() {
         let alert = UIAlertController(
-            title: AlertText.locationDeniedTitle,
-            message: AlertText.locationDeniedMessage,
+            title: LocationAlertText.locationDeniedTitle,
+            message: LocationAlertText.locationDeniedMessage,
             preferredStyle: .alert
         )
         
-        alert.addAction(UIAlertAction(title: AlertText.okButtonTitle, style: .cancel))
-        alert.addAction(UIAlertAction(title: AlertText.settingsButtonTitle, style: .default) { _ in
+        alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .cancel))
+        alert.addAction(UIAlertAction(title: CommonText.settingsButtonTitle, style: .default) { _ in
             guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
             if UIApplication.shared.canOpenURL(url) {
                 UIApplication.shared.open(url)
@@ -126,16 +130,15 @@ private extension MapViewController {
     
     func showLocationErrorAlert() {
         let alert = UIAlertController(
-            title: AlertText.locationErrorTitle,
-            message: AlertText.locationErrorMessage,
+            title: LocationAlertText.locationErrorTitle,
+            message: LocationAlertText.locationErrorMessage,
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: AlertText.okButtonTitle, style: .default))
+        alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
         present(alert, animated: true)
     }
 }
 
-// MARK: - Location Flow
 private extension MapViewController {
     func handleLocationAuthorization(
         onAuthorized: () -> Void
@@ -165,7 +168,33 @@ private extension MapViewController {
     }
 }
 
+private extension MapViewController {
+    func setupView() {
+        view.addSubviews(
+            contentView
+        )
+        
+        locationManager.delegate = self
+    }
+}
+
+private extension MapViewController {
+    func setupLayout() {
+        view.disableAutoresizing(
+            contentView
+        )
+        
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: view.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+    }
+}
+
 // MARK: - CLLocationManagerDelegate
+
 extension MapViewController: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {

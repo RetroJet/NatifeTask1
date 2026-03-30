@@ -15,7 +15,7 @@ struct PlaceInfoMapper {
         let route = components?.first { $0.types.contains(.route) }?.name
         let streetNumber = components?.first { $0.types.contains(.streetNumber) }?.name
         
-        let addressText = [route, streetNumber]
+        let address = [route, streetNumber]
             .compactMap { $0 }
             .joined(separator: " ")
         
@@ -24,7 +24,9 @@ struct PlaceInfoMapper {
             coordinate: place.location,
             country: country,
             city: city,
-            address: addressText.isEmpty ? nil: addressText
+            address: address.isEmpty ? nil : address,
+            photo: place.photos?.first,
+            rating: place.rating
         )
     }
 }
