@@ -11,11 +11,45 @@ final class PlaceCell: UITableViewCell {
     
     // MARK: - UI Elements
     
-    private let textStackView = UIStackView()
-    private let titleLabel = UILabel()
-    private let ratingLabel = UILabel()
-    private let addressLabel = UILabel()
-    private let placeImage = UIImageView()
+    private lazy var textStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 5
+        stackView.alignment = .fill
+        stackView.distribution = .fill
+        return stackView
+    }()
+    
+    private lazy var titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.boldSystemFont(ofSize: 20)
+        label.textColor = .black
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    private lazy var ratingLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 16)
+        label.numberOfLines = 1
+        return label
+    }()
+    
+    private lazy var addressLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 18)
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    private lazy var placeImage: UIImageView = {
+        let image = UIImageView()
+        image.layer.cornerRadius = 20
+        image.clipsToBounds = true
+        image.contentMode = .scaleAspectFill
+        image.image = .noImagePlaceholder
+        return image
+    }()
     
     // MARK: - Properties
     
@@ -25,8 +59,6 @@ final class PlaceCell: UITableViewCell {
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupImage()
-        setupLabel()
         setupStackView()
         setupView()
         setupLayout()
@@ -99,30 +131,6 @@ private extension PlaceCell {
             addressLabel,
             ratingLabel
         )
-        
-        textStackView.axis = .vertical
-        textStackView.spacing = 5
-        textStackView.alignment = .fill
-        textStackView.distribution = .fill
-    }
-    
-    func setupLabel() {
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        titleLabel.textColor = .black
-        titleLabel.numberOfLines = 0
-        
-        addressLabel.font = UIFont.systemFont(ofSize: 18)
-        addressLabel.numberOfLines = 0
-        
-        ratingLabel.font = UIFont.systemFont(ofSize: 16)
-        ratingLabel.numberOfLines = 1
-    }
-    
-    func setupImage() {
-        placeImage.layer.cornerRadius = 20
-        placeImage.clipsToBounds = true
-        placeImage.contentMode = .scaleAspectFill
-        placeImage.image = .noImagePlaceholder
     }
 }
 

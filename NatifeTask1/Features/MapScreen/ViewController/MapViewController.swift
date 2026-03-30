@@ -8,6 +8,13 @@
 import UIKit
 import CoreLocation
 
+protocol MapViewControllerProtocol: AnyObject {
+    func render(places: [PlaceInfo])
+    func setListButtonEnabled(_ isEnabled: Bool)
+    func showPlacesLoadErrorAlert(_ error: Error)
+    func showPlacesList(with places: [PlaceInfo])
+}
+
 final class MapViewController: UIViewController {
     
     // MARK: - UI Elements
@@ -16,29 +23,8 @@ final class MapViewController: UIViewController {
     
     // MARK: - Properties
     
-    private let placesService: PlacesServiceProtocol
-    private let placePhotoService: PlacePhotoServiceProtocol
+    var presenter: MapPresenterProtocol!
     private let locationManager = CLLocationManager()
-    private var placeResults: [PlaceInfo] = []
-    
-    // MARK: - Initializers
-    
-    init(
-        placesService: PlacesServiceProtocol,
-        placePhotoService: PlacePhotoServiceProtocol
-    ) {
-        self.placesService = placesService
-        self.placePhotoService = placePhotoService
-        super.init(
-            nibName: nil,
-            bundle: nil
-        )
-    }
-    
-    @available(*, unavailable)
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
     
     // MARK: - Lifecycle
     
@@ -59,7 +45,6 @@ final class MapViewController: UIViewController {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
     }
-    
 }
 
 // MARK: - Private Methods
@@ -71,45 +56,12 @@ private extension MapViewController {
         }
         
         contentView.onListButtonTapped = { [weak self] in
-            guard let self else { return }
-            
-            let viewController = PlacesListViewController(
-                places: self.placeResults,
-                placePhotoService: placePhotoService
-            )
-            
-            self.navigationController?.pushViewController(viewController, animated: true)
+            self?.presenter.showPlacesList()
         }
     }
 }
 
 private extension MapViewController {
-    func loadPlaces(coordinate: CLLocationCoordinate2D) async {
-        do {
-            let places = try await placesService.fetchNearbyPlaces(to: coordinate)
-            placeResults = places
-            contentView.render(places: places)
-            contentView.setListButtonEnabled(true)
-        } catch {
-            if case let PlacesServiceError.loadFailed(error) = error {
-                print(error.localizedDescription)
-            }
-            showPlacesLoadErrorAlert(error)
-        }
-    }
-}
-
-private extension MapViewController {
-    func showPlacesLoadErrorAlert(_ error: Error) {
-        let alert = UIAlertController(
-            title: nil,
-            message: error.localizedDescription,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
-        present(alert, animated: true)
-    }
-    
     func showLocationDeniedAlert() {
         let alert = UIAlertController(
             title: LocationAlertText.locationDeniedTitle,
@@ -193,6 +145,34 @@ private extension MapViewController {
     }
 }
 
+// MARK: - MapViewControllerProtocol
+
+extension MapViewController: MapViewControllerProtocol {
+    func render(places: [PlaceInfo]) {
+        contentView.render(places: places)
+    }
+    
+    func setListButtonEnabled(_ isEnabled: Bool) {
+        contentView.setListButtonEnabled(isEnabled)
+    }
+    
+    func showPlacesLoadErrorAlert(_ error: Error) {
+        let alert = UIAlertController(
+            title: nil,
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
+        present(alert, animated: true)
+    }
+    
+    func showPlacesList(with places: [PlaceInfo]) {
+        let viewController = PlacesListAssembly.build(places: places)
+        
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
 // MARK: - CLLocationManagerDelegate
 
 extension MapViewController: CLLocationManagerDelegate {
@@ -216,7 +196,7 @@ extension MapViewController: CLLocationManagerDelegate {
         contentView.center(on: coordinate)
         
         Task {
-            await loadPlaces(coordinate: coordinate)
+            await presenter.loadPlaces(coordinate: coordinate)
         }
     }
     

@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "common_ok_button_title" : {
+
+    },
+    "common_settings_button_title" : {
+
+    },
     "location_denied_message" : {
       "extractionState" : "manual",
       "localizations" : {

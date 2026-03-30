@@ -17,8 +17,28 @@ final class MapView: UIView {
     
     // MARK: - UI Elements
     
-    private let geoButton = UIButton(configuration: .glass())
-    private let listButton = UIButton(configuration: .glass())
+    private lazy var geoButton: UIButton = {
+        let button = UIButton(configuration: .glass())
+        button.setImage(UIImage(systemName: "location.fill"), for: .normal)
+        button.backgroundColor = .blue
+        button.layer.cornerRadius = 25
+        button.clipsToBounds = true
+        button.addTarget(self, action: #selector(setupGeoButton), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var listButton: UIButton = {
+        let button = UIButton(configuration: .glass())
+        button.setImage(.init(systemName: "list.bullet.rectangle.portrait.fill"), for: .normal)
+        button.backgroundColor = .white
+        button.layer.cornerRadius = 25
+        button.clipsToBounds = true
+        button.isEnabled = false
+        button.alpha = 0.5
+        button.addTarget(self, action: #selector(setupListButton), for: .touchUpInside)
+        return button
+    }()
+    
     private var mapView: GMSMapView!
     
     // MARK: - Initialization
@@ -26,7 +46,6 @@ final class MapView: UIView {
     override init(frame: CGRect) {
         super.init(frame: .zero)
         setupMap()
-        setupButton()
         setupView()
         setupLayout()
     }
@@ -88,22 +107,6 @@ private extension MapView {
             geoButton,
             listButton
         )
-    }
-    
-    func setupButton() {
-        geoButton.setImage(UIImage(systemName: "location.fill"), for: .normal)
-        geoButton.backgroundColor = .blue
-        geoButton.layer.cornerRadius = 25
-        geoButton.clipsToBounds = true
-        geoButton.addTarget(self, action: #selector(setupGeoButton), for: .touchUpInside)
-        
-        listButton.setImage(.init(systemName: "list.bullet.rectangle.portrait.fill"), for: .normal)
-        listButton.backgroundColor = .white
-        listButton.layer.cornerRadius = 25
-        listButton.clipsToBounds = true
-        listButton.addTarget(self, action: #selector(setupListButton), for: .touchUpInside)
-        
-        setListButtonEnabled(false)
     }
     
     @objc

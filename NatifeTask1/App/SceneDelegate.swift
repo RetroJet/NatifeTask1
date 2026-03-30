@@ -5,7 +5,6 @@
 //  Created by Nazar on 16.03.2026.
 //
 
-import GooglePlacesSwift
 import UIKit
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -15,11 +14,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
-        let placeClient = PlacesClient.shared
-        let placesService = PlacesService(placesClient: placeClient)
-        let placePhotoService = PlacePhotoService()
-        let mapViewController = MapViewController(placesService: placesService, placePhotoService: placePhotoService)
-        let navigationController = UINavigationController(rootViewController: mapViewController)
+        let navigationController = UINavigationController(rootViewController: MapAssembly.build())
         
         window = UIWindow(windowScene: windowScene)
         window?.rootViewController = navigationController
