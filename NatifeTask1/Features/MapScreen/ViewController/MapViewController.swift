@@ -16,18 +16,18 @@ protocol MapViewControllerProtocol: AnyObject {
 }
 
 final class MapViewController: UIViewController {
-    
+
     // MARK: - UI Elements
-    
+
     private let contentView = MapView()
-    
+
     // MARK: - Properties
-    
+
     var presenter: MapPresenterProtocol!
     private let locationManager = CLLocationManager()
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupBindings()
@@ -35,12 +35,12 @@ final class MapViewController: UIViewController {
         setupLayout()
         setupLocation()
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.setNavigationBarHidden(true, animated: animated)
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -54,7 +54,7 @@ private extension MapViewController {
         contentView.onGeoButtonTapped = { [weak self] in
             self?.setupGeoButtonTap()
         }
-        
+
         contentView.onListButtonTapped = { [weak self] in
             self?.presenter.showPlacesList()
         }
@@ -68,7 +68,7 @@ private extension MapViewController {
             message: LocationAlertText.locationDeniedMessage,
             preferredStyle: .alert
         )
-        
+
         alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .cancel))
         alert.addAction(UIAlertAction(title: CommonText.settingsButtonTitle, style: .default) { _ in
             guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
@@ -76,10 +76,10 @@ private extension MapViewController {
                 UIApplication.shared.open(url)
             }
         })
-        
+
         present(alert, animated: true)
     }
-    
+
     func showLocationErrorAlert() {
         let alert = UIAlertController(
             title: LocationAlertText.locationErrorTitle,
@@ -106,13 +106,13 @@ private extension MapViewController {
             break
         }
     }
-    
+
     func setupLocation() {
         handleLocationAuthorization {
             locationManager.startUpdatingLocation()
         }
     }
-    
+
     func setupGeoButtonTap() {
         handleLocationAuthorization {
             contentView.centerOnUserLocation()
@@ -125,7 +125,7 @@ private extension MapViewController {
         view.addSubviews(
             contentView
         )
-        
+
         locationManager.delegate = self
     }
 }
@@ -135,7 +135,7 @@ private extension MapViewController {
         view.disableAutoresizing(
             contentView
         )
-        
+
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: view.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -151,11 +151,11 @@ extension MapViewController: MapViewControllerProtocol {
     func render(places: [PlaceInfo]) {
         contentView.render(places: places)
     }
-    
+
     func setListButtonEnabled(_ isEnabled: Bool) {
         contentView.setListButtonEnabled(isEnabled)
     }
-    
+
     func showPlacesLoadErrorAlert(_ error: Error) {
         let alert = UIAlertController(
             title: nil,
@@ -165,10 +165,10 @@ extension MapViewController: MapViewControllerProtocol {
         alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
         present(alert, animated: true)
     }
-    
+
     func showPlacesList(with places: [PlaceInfo]) {
         let viewController = PlacesListAssembly.build(places: places)
-        
+
         navigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -188,18 +188,18 @@ extension MapViewController: CLLocationManagerDelegate {
             break
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let coordinate = locations.first?.coordinate else { return }
         manager.stopUpdatingLocation()
-        
+
         contentView.center(on: coordinate)
-        
+
         Task {
             await presenter.loadPlaces(coordinate: coordinate)
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         showLocationErrorAlert()
     }

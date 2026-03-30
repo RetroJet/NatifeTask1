@@ -14,11 +14,11 @@ struct PlaceInfoMapper {
         let city = components?.first { $0.types.contains(.locality) }?.name
         let route = components?.first { $0.types.contains(.route) }?.name
         let streetNumber = components?.first { $0.types.contains(.streetNumber) }?.name
-        
+
         let address = [route, streetNumber]
             .compactMap { $0 }
             .joined(separator: " ")
-        
+
         return PlaceInfo(
             name: place.displayName ?? "",
             coordinate: place.location,

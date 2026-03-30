@@ -21,7 +21,7 @@ extension UITableView {
     func register<Cell: UITableViewCell>(cell: Cell.Type) {
         self.register(cell.self, forCellReuseIdentifier: cell.identifier)
     }
-    
+
     func dequeue<Cell: UITableViewCell>(for indexPath: IndexPath) -> Cell {
         guard let cell = self.dequeueReusableCell(withIdentifier: Cell.identifier, for: indexPath) as? Cell else {
             fatalError("Cell \(String(describing: Cell.self)) not registered")

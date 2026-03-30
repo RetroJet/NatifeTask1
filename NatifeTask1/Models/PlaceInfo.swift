@@ -16,14 +16,14 @@ struct PlaceInfo {
     let address: String?
     let photo: Photo?
     let rating: Float?
-    
+
     var detailsText: String? {
         let value = [country, city]
             .compactMap { $0 }
             .joined(separator: ", ")
         return value.isEmpty ? nil : value
     }
-    
+
     var ratingText: String? {
         guard let rating else { return nil }
         let starsCount = Int(round(rating))
@@ -31,4 +31,3 @@ struct PlaceInfo {
         return "\(String(format: "%.1f", rating)) \(stars)"
     }
 }
-

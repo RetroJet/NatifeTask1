@@ -13,12 +13,11 @@ final class PlacesListAssembly {
         let viewController = PlacesListViewController(
             placePhotoService: placePhotoService
         )
-        
+
         let presenter = PlacesListPresenter(places: places)
-        
+
         viewController.presenter = presenter
-        
+
         return viewController
     }
 }
-

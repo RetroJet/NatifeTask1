@@ -13,15 +13,15 @@ protocol MapPresenterProtocol: AnyObject {
 }
 
 final class MapPresenter {
-    
+
     // MARK: - Properties
-    
+
     private weak var viewController: MapViewControllerProtocol?
     private var placeResults: [PlaceInfo] = []
     private let placeService: PlacesServiceProtocol
-    
+
     // MARK: - Initializers
-    
+
     init(
         viewController: MapViewControllerProtocol,
         placeService: PlacesServiceProtocol
@@ -44,15 +44,15 @@ extension MapPresenter: MapPresenterProtocol {
             placeResults = []
             viewController?.render(places: [])
             viewController?.setListButtonEnabled(false)
-            
+
             if case let PlacesServiceError.loadFailed(error) = error {
                 print(error.localizedDescription)
             }
-            
+
             viewController?.showPlacesLoadErrorAlert(error)
         }
     }
-    
+
     func showPlacesList() {
         guard !placeResults.isEmpty else { return }
         viewController?.showPlacesList(with: placeResults)

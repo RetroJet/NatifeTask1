@@ -16,9 +16,9 @@ final class MapAssembly {
             viewController: viewController,
             placeService: placesService
         )
-        
+
         viewController.presenter = presenter
-        
+
         return viewController
     }
 }

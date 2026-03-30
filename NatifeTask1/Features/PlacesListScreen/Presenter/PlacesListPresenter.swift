@@ -11,13 +11,13 @@ protocol PlacesListPresenterProtocol {
 }
 
 final class PlacesListPresenter {
-    
+
     // MARK: - Properties
-    
+
     private var places: [PlaceInfo] = []
-    
+
     // MARK: - Initializers
-    
+
     init(places: [PlaceInfo]) {
         self.places = places
     }
@@ -29,7 +29,7 @@ extension PlacesListPresenter: PlacesListPresenterProtocol {
     func getPlacesCount() -> Int {
         places.count
     }
-    
+
     func getPlace(by index: Int) -> PlaceInfo {
         places[index]
     }
