@@ -83,6 +83,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				789B42C32F7AA4D000DFF47A /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				78AA79EC2F68BAFE002858AA /* NatifeTask1 */,
@@ -157,6 +158,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		789B42C32F7AA4D000DFF47A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 789B42C22F7AA4D000DFF47A /* SwiftLintBuildToolPlugin */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		78AA79FE2F68BB00002858AA /* Debug */ = {
@@ -411,6 +419,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 780BEDCD2F7450D400BAB500 /* XCRemoteSwiftPackageReference "netfox" */;
 			productName = netfox;
+		};
+		789B42C22F7AA4D000DFF47A /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7856ACBD2F75AE9600C30726 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
 		};
 		78AA7A462F69369A002858AA /* GooglePlaces */ = {
 			isa = XCSwiftPackageProductDependency;

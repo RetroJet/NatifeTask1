@@ -7,44 +7,52 @@
 
 import UIKit
 
+protocol PlacesListViewControllerProtocol: AnyObject {
+    func reloadData()
+}
+
 final class PlacesListViewController: UIViewController {
-    
+
     // MARK: - UI Elements
-    
-    private let tableView = UITableView()
-    
+
+    private lazy var tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = Constants.estimatedRowHeight
+        tableView.separatorInset = .zero
+        tableView.dataSource = self
+        tableView.register(cell: PlaceCell.self)
+        return tableView
+    }()
+
     // MARK: - Properties
-    
+
+    var presenter: PlacesListPresenterProtocol!
     private let placePhotoService: PlacePhotoServiceProtocol
-    private var places: [PlaceInfo] = []
-    
+
     // MARK: - Initializers
-    
-    init(
-        places: [PlaceInfo],
-        placePhotoService: PlacePhotoServiceProtocol
-    ) {
-        self.places = places
+
+    init(placePhotoService: PlacePhotoServiceProtocol) {
         self.placePhotoService = placePhotoService
         super.init(
             nibName: nil,
             bundle: nil
         )
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     // MARK: - Lifecycle
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupTableView()
         setupNavigationBar()
         setupView()
         setupLayout()
+        presenter.startInitialLoading()
     }
 }
 
@@ -54,23 +62,14 @@ private extension PlacesListViewController {
     func setupView() {
         view.addSubview(tableView)
     }
-    
-    func setupTableView() {
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = Constants.estimatedRowHeight
-        tableView.separatorInset = .zero
-        
-        tableView.dataSource = self
-        tableView.register(cell: PlaceCell.self)
-    }
-    
+
     func setupNavigationBar() {
         title = PlacesListText.title
-        
+
         let appearance = UINavigationBarAppearance()
         appearance.shadowColor = .separator
         appearance.backgroundColor = .white
-        
+
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.standardAppearance = appearance
     }
@@ -81,7 +80,7 @@ private extension PlacesListViewController {
         view.disableAutoresizing(
             tableView
         )
-        
+
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -97,17 +96,26 @@ private extension PlacesListViewController {
     }
 }
 
+// MARK: - PlacesListViewControllerProtocol
+
+extension PlacesListViewController: PlacesListViewControllerProtocol {
+    func reloadData() {
+        tableView.reloadData()
+    }
+}
+
 // MARK: - UITableViewDataSource
+
 extension PlacesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        places.count
+        presenter.getPlacesCount()
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: PlaceCell = tableView.dequeue(for: indexPath)
-        let place = places[indexPath.row]
+        let viewModel = presenter.getPlaceViewModel(at: indexPath.row)
         cell.configure(
-            with: place,
+            with: viewModel,
             placePhotoService: placePhotoService
         )
         return cell
