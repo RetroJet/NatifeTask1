@@ -86,17 +86,17 @@ final class PlaceCell: UITableViewCell {
 // MARK: - Internal Methods
 
 extension PlaceCell {
-    func configure(with place: PlaceInfo, placePhotoService: PlacePhotoServiceProtocol) {
+    func configure(with viewModel: PlaceCellViewModel, placePhotoService: PlacePhotoServiceProtocol) {
         photoTask?.cancel()
         photoTask = nil
 
-        titleLabel.text = place.name
-        addressLabel.text = place.address
+        titleLabel.text = viewModel.name
+        addressLabel.text = viewModel.address
         placeImage.image = .noImagePlaceholder
-        ratingLabel.text = place.ratingText
-        ratingLabel.isHidden = place.ratingText == nil
+        ratingLabel.text = viewModel.ratingText
+        ratingLabel.isHidden = viewModel.ratingText == nil
 
-        guard let photo = place.photo else { return }
+        guard let photo = viewModel.photo else { return }
 
         photoTask = Task { [weak self] in
             let image = await placePhotoService.fetchPhoto(

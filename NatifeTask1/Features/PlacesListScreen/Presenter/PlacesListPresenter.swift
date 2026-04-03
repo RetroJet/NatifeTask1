@@ -6,31 +6,45 @@
 //
 
 protocol PlacesListPresenterProtocol {
+    func startInitialLoading()
     func getPlacesCount() -> Int
-    func getPlace(by index: Int) -> PlaceInfo
+    func getPlaceViewModel(at index: Int) -> PlaceCellViewModel
 }
 
 final class PlacesListPresenter {
 
     // MARK: - Properties
-
-    private var places: [PlaceInfo] = []
-
+    
+    private weak var viewController: PlacesListViewControllerProtocol?
+    private let viewModels: [PlaceCellViewModel]
+    
     // MARK: - Initializers
 
-    init(places: [PlaceInfo]) {
-        self.places = places
+    init(viewController: PlacesListViewControllerProtocol, places: [PlaceInfo]) {
+        self.viewController = viewController
+        self.viewModels = places.map {
+            PlaceCellViewModel(
+                name: $0.name,
+                address: $0.address,
+                ratingText: $0.ratingText,
+                photo: $0.photo
+            )
+        }
     }
 }
 
 // MARK: - PlacesListPresenterProtocol
 
 extension PlacesListPresenter: PlacesListPresenterProtocol {
-    func getPlacesCount() -> Int {
-        places.count
+    func startInitialLoading() {
+        viewController?.reloadData()
     }
 
-    func getPlace(by index: Int) -> PlaceInfo {
-        places[index]
+    func getPlacesCount() -> Int {
+        viewModels.count
+    }
+
+    func getPlaceViewModel(at index: Int) -> PlaceCellViewModel {
+        viewModels[index]
     }
 }

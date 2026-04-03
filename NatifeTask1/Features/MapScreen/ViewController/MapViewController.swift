@@ -11,7 +11,11 @@ import CoreLocation
 protocol MapViewControllerProtocol: AnyObject {
     func render(places: [PlaceInfo])
     func setListButtonEnabled(_ isEnabled: Bool)
+    func centerMap(on coordinate: CLLocationCoordinate2D)
+    func centerMapOnUserLocation()
     func showPlacesLoadErrorAlert(_ error: Error)
+    func showLocationDeniedAlert()
+    func showLocationErrorAlert()
     func showPlacesList(with places: [PlaceInfo])
 }
 
@@ -24,7 +28,6 @@ final class MapViewController: UIViewController {
     // MARK: - Properties
 
     var presenter: MapPresenterProtocol!
-    private let locationManager = CLLocationManager()
 
     // MARK: - Lifecycle
 
@@ -33,7 +36,7 @@ final class MapViewController: UIViewController {
         setupBindings()
         setupView()
         setupLayout()
-        setupLocation()
+        presenter.startInitialLoading()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -52,16 +55,63 @@ final class MapViewController: UIViewController {
 private extension MapViewController {
     func setupBindings() {
         contentView.onGeoButtonTapped = { [weak self] in
-            self?.setupGeoButtonTap()
+            self?.presenter.didTapGeoButton()
         }
 
         contentView.onListButtonTapped = { [weak self] in
-            self?.presenter.showPlacesList()
+            self?.presenter.didTapListButton()
         }
+    }
+
+    func setupView() {
+        view.addSubviews(
+            contentView
+        )
+    }
+
+    func setupLayout() {
+        view.disableAutoresizing(
+            contentView
+        )
+
+        NSLayoutConstraint.activate([
+            contentView.topAnchor.constraint(equalTo: view.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }
 
-private extension MapViewController {
+// MARK: - MapViewControllerProtocol
+
+extension MapViewController: MapViewControllerProtocol {
+    func render(places: [PlaceInfo]) {
+        contentView.render(places: places)
+    }
+
+    func setListButtonEnabled(_ isEnabled: Bool) {
+        contentView.setListButtonEnabled(isEnabled)
+    }
+
+    func centerMap(on coordinate: CLLocationCoordinate2D) {
+        contentView.center(on: coordinate)
+    }
+
+    func centerMapOnUserLocation() {
+        contentView.centerOnUserLocation()
+    }
+
+    func showPlacesLoadErrorAlert(_ error: Error) {
+        let alert = UIAlertController(
+            title: nil,
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
+        present(alert, animated: true)
+    }
+
     func showLocationDeniedAlert() {
         let alert = UIAlertController(
             title: LocationAlertText.locationDeniedTitle,
@@ -89,118 +139,9 @@ private extension MapViewController {
         alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
         present(alert, animated: true)
     }
-}
-
-private extension MapViewController {
-    func handleLocationAuthorization(
-        onAuthorized: () -> Void
-    ) {
-        switch locationManager.authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            onAuthorized()
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        case .denied, .restricted:
-            showLocationDeniedAlert()
-        @unknown default:
-            break
-        }
-    }
-
-    func setupLocation() {
-        handleLocationAuthorization {
-            locationManager.startUpdatingLocation()
-        }
-    }
-
-    func setupGeoButtonTap() {
-        handleLocationAuthorization {
-            contentView.centerOnUserLocation()
-        }
-    }
-}
-
-private extension MapViewController {
-    func setupView() {
-        view.addSubviews(
-            contentView
-        )
-
-        locationManager.delegate = self
-    }
-}
-
-private extension MapViewController {
-    func setupLayout() {
-        view.disableAutoresizing(
-            contentView
-        )
-
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-    }
-}
-
-// MARK: - MapViewControllerProtocol
-
-extension MapViewController: MapViewControllerProtocol {
-    func render(places: [PlaceInfo]) {
-        contentView.render(places: places)
-    }
-
-    func setListButtonEnabled(_ isEnabled: Bool) {
-        contentView.setListButtonEnabled(isEnabled)
-    }
-
-    func showPlacesLoadErrorAlert(_ error: Error) {
-        let alert = UIAlertController(
-            title: nil,
-            message: error.localizedDescription,
-            preferredStyle: .alert
-        )
-        alert.addAction(UIAlertAction(title: CommonText.okButtonTitle, style: .default))
-        present(alert, animated: true)
-    }
 
     func showPlacesList(with places: [PlaceInfo]) {
         let viewController = PlacesListAssembly.build(places: places)
-
         navigationController?.pushViewController(viewController, animated: true)
-    }
-}
-
-// MARK: - CLLocationManagerDelegate
-
-extension MapViewController: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            manager.startUpdatingLocation()
-        case .denied, .restricted:
-            showLocationDeniedAlert()
-        case .notDetermined:
-            break
-        @unknown default:
-            break
-        }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let coordinate = locations.first?.coordinate else { return }
-        manager.stopUpdatingLocation()
-
-        contentView.center(on: coordinate)
-
-        Task {
-            await presenter.loadPlaces(coordinate: coordinate)
-        }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        showLocationErrorAlert()
     }
 }

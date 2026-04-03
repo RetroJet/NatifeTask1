@@ -7,6 +7,10 @@
 
 import UIKit
 
+protocol PlacesListViewControllerProtocol: AnyObject {
+    func reloadData()
+}
+
 final class PlacesListViewController: UIViewController {
 
     // MARK: - UI Elements
@@ -48,6 +52,7 @@ final class PlacesListViewController: UIViewController {
         setupNavigationBar()
         setupView()
         setupLayout()
+        presenter.startInitialLoading()
     }
 }
 
@@ -91,6 +96,14 @@ private extension PlacesListViewController {
     }
 }
 
+// MARK: - PlacesListViewControllerProtocol
+
+extension PlacesListViewController: PlacesListViewControllerProtocol {
+    func reloadData() {
+        tableView.reloadData()
+    }
+}
+
 // MARK: - UITableViewDataSource
 
 extension PlacesListViewController: UITableViewDataSource {
@@ -100,9 +113,9 @@ extension PlacesListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: PlaceCell = tableView.dequeue(for: indexPath)
-        let place = presenter.getPlace(by: indexPath.row)
+        let viewModel = presenter.getPlaceViewModel(at: indexPath.row)
         cell.configure(
-            with: place,
+            with: viewModel,
             placePhotoService: placePhotoService
         )
         return cell

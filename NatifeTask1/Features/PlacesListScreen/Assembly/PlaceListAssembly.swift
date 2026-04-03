@@ -14,7 +14,10 @@ final class PlacesListAssembly {
             placePhotoService: placePhotoService
         )
 
-        let presenter = PlacesListPresenter(places: places)
+        let presenter = PlacesListPresenter(
+            viewController: viewController,
+            places: places
+        )
 
         viewController.presenter = presenter
 
